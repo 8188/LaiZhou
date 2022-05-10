@@ -1,0 +1,4 @@
+model_new/
+.vscode/
+__pycache__/
+logs/

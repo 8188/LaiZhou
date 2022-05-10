@@ -18,6 +18,7 @@ dic = load_dic()
 
 def redisHSet(rdb, maxCapacity, tableName, key, dataNow, columnNames, collectionTime, dataHGet, expireTime):
     res = dict(zip(['time'] + columnNames, [collectionTime] + dataNow))
+    # print(tableName, len(dataHGet))
     if len(dataHGet) > maxCapacity:
         rdb.hset(tableName, key, str(dataHGet[1:] + [res]))
     else:
@@ -116,7 +117,7 @@ def H2LeakageVol(genVol):
             P1 /= Constant.H2_LEAKAGE_DATA_FILTER_TIME
             t1 /= Constant.H2_LEAKAGE_DATA_FILTER_TIME * 2
             B1 *= Constant.KPA_TO_MPA_FACTOR / Constant.H2_LEAKAGE_DATA_FILTER_TIME
-
+            # print(P1, B1, t1, P2, B2, t2)
             leakageVolume = Constant.GAS_CONSTANT * genVol \
                 * ((P1 + B1) / (Constant.C_TO_K_FACTOR + t1) - (P2 + B2) / (Constant.C_TO_K_FACTOR + t2))
             
@@ -127,17 +128,16 @@ def H2LeakageCalSave(H2LeakageVol, collectionTime):
     H2LeakageCal = rdb.hget(Config.TABLE_H2_LEAKAGE_CAL, Config.KEY_H2_LEAKAGE_CAL)
     H2LeakageCal = list(eval(H2LeakageCal)) if H2LeakageCal else []
 
+    length = len(H2LeakageCal)
+    if length > Constant.H2_LEAKAGE_CAL_FILTER_TIME:
+        H2LeakageVol = max(H2LeakageCal[0]['leakage'] + (H2LeakageVol - H2LeakageCal[-1]['leakage']) / (length + 1), 0)
+    H2LeakageVol *= Constant.H2_LEAKAGE_MODIFICATION_FACTOR
+    # print(H2LeakageVol)    
     redisHSet(
         rdb=rdb, maxCapacity=Constant.MAX_CAPACITY_TABLE_H2_LEAKAGE_CAL, tableName=Config.TABLE_H2_LEAKAGE_CAL,
         key=Config.KEY_H2_LEAKAGE_CAL, dataNow=[H2LeakageVol], columnNames=['leakage'],
         collectionTime=collectionTime, dataHGet=H2LeakageCal, expireTime=Constant.TABLE_H2_LEAKAGE_CAL_EXPIRE_TIME)
 
-    length = len(H2LeakageCal)
-    if length > Constant.H2_LEAKAGE_CAL_FILTER_TIME:
-        for i in range(length):
-            H2LeakageVol += H2LeakageCal[-1-i]['leakage']
-        H2LeakageVol /= length
-    # print(H2LeakageVol)    
     return H2LeakageVol
 
 def H2FillJudge():
