@@ -1,4 +1,4 @@
-2022-04-17 15:59:14,319 ERROR: Exception on /HOW [POST] [in C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py:1455]
+2022-05-05 20:04:37,579 ERROR: Exception on /HOW [POST] [in C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py:1455]
 Traceback (most recent call last):
   File "C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py", line 2070, in wsgi_app
     response = self.full_dispatch_request()
@@ -12,11 +12,12 @@ Traceback (most recent call last):
     return jsonify(HOW_pred())
   File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\data_make.py", line 256, in HOW_pred
     hydrogenLeakageVol = trunc(H2LeakageCalSave(hydrogenLeakageVol, collectionTime))
-  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 127, in H2LeakageCalSave
-    print(sum(H2LeakageCal[:19]))
-TypeError: unsupported operand type(s) for +: 'int' and 'dict'
-2022-04-17 16:01:19,229 INFO: LaiZhou startup [in C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\__init__.py:34]
-2022-04-17 16:01:23,480 ERROR: Exception on /HOW [POST] [in C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py:1455]
+  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 148, in H2LeakageCalSave
+    collectionTime=collectionTime, dataHGet=H2LeakageCal, expireTime=Constant.TABLE_H2_LEAKAGE_CAL_EXPIRE_TIME)
+  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 20, in redisHSet
+    res = dict(zip(['time'] + columnNames, [collectionTime] + dataNow))
+TypeError: can only concatenate list (not "int") to list
+2022-05-05 20:04:37,801 ERROR: Exception on /HOW [POST] [in C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py:1455]
 Traceback (most recent call last):
   File "C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py", line 2070, in wsgi_app
     response = self.full_dispatch_request()
@@ -30,10 +31,12 @@ Traceback (most recent call last):
     return jsonify(HOW_pred())
   File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\data_make.py", line 256, in HOW_pred
     hydrogenLeakageVol = trunc(H2LeakageCalSave(hydrogenLeakageVol, collectionTime))
-  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 128, in H2LeakageCalSave
-    return (sum(H2LeakageCal[:19]['leakage']) + H2LeakageVol) / 20 if len(H2LeakageCal) > 20 else 0
-TypeError: list indices must be integers or slices, not str
-2022-04-17 16:01:24,092 ERROR: Exception on /HOW [POST] [in C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py:1455]
+  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 148, in H2LeakageCalSave
+    collectionTime=collectionTime, dataHGet=H2LeakageCal, expireTime=Constant.TABLE_H2_LEAKAGE_CAL_EXPIRE_TIME)
+  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 20, in redisHSet
+    res = dict(zip(['time'] + columnNames, [collectionTime] + dataNow))
+TypeError: can only concatenate list (not "int") to list
+2022-05-05 20:04:38,018 ERROR: Exception on /HOW [POST] [in C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py:1455]
 Traceback (most recent call last):
   File "C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py", line 2070, in wsgi_app
     response = self.full_dispatch_request()
@@ -47,10 +50,12 @@ Traceback (most recent call last):
     return jsonify(HOW_pred())
   File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\data_make.py", line 256, in HOW_pred
     hydrogenLeakageVol = trunc(H2LeakageCalSave(hydrogenLeakageVol, collectionTime))
-  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 128, in H2LeakageCalSave
-    return (sum(H2LeakageCal[:19]['leakage']) + H2LeakageVol) / 20 if len(H2LeakageCal) > 20 else 0
-TypeError: list indices must be integers or slices, not str
-2022-04-17 16:01:24,686 ERROR: Exception on /HOW [POST] [in C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py:1455]
+  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 148, in H2LeakageCalSave
+    collectionTime=collectionTime, dataHGet=H2LeakageCal, expireTime=Constant.TABLE_H2_LEAKAGE_CAL_EXPIRE_TIME)
+  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 20, in redisHSet
+    res = dict(zip(['time'] + columnNames, [collectionTime] + dataNow))
+TypeError: can only concatenate list (not "int") to list
+2022-05-05 20:04:38,230 ERROR: Exception on /HOW [POST] [in C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py:1455]
 Traceback (most recent call last):
   File "C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py", line 2070, in wsgi_app
     response = self.full_dispatch_request()
@@ -64,10 +69,20 @@ Traceback (most recent call last):
     return jsonify(HOW_pred())
   File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\data_make.py", line 256, in HOW_pred
     hydrogenLeakageVol = trunc(H2LeakageCalSave(hydrogenLeakageVol, collectionTime))
-  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 128, in H2LeakageCalSave
-    return (sum(H2LeakageCal[:19]['leakage']) + H2LeakageVol) / 20 if len(H2LeakageCal) > 20 else 0
-TypeError: list indices must be integers or slices, not str
-2022-04-17 16:01:25,292 ERROR: Exception on /HOW [POST] [in C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py:1455]
+  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 148, in H2LeakageCalSave
+    collectionTime=collectionTime, dataHGet=H2LeakageCal, expireTime=Constant.TABLE_H2_LEAKAGE_CAL_EXPIRE_TIME)
+  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 20, in redisHSet
+    res = dict(zip(['time'] + columnNames, [collectionTime] + dataNow))
+TypeError: can only concatenate list (not "int") to list
+2022-05-05 20:10:31,820 INFO: LaiZhou startup [in C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\__init__.py:34]
+2022-05-05 20:12:21,097 INFO: LaiZhou startup [in C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\__init__.py:34]
+2022-05-05 20:38:40,841 INFO: LaiZhou startup [in C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\__init__.py:34]
+2022-05-05 20:40:02,741 INFO: LaiZhou startup [in C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\__init__.py:34]
+2022-05-09 18:52:44,899 INFO: LaiZhou startup [in C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\__init__.py:34]
+2022-05-09 18:54:10,242 INFO: LaiZhou startup [in C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\__init__.py:34]
+2022-05-10 20:26:56,640 INFO: LaiZhou startup [in C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\__init__.py:34]
+2022-05-10 20:36:27,126 INFO: LaiZhou startup [in C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\__init__.py:34]
+2022-05-10 20:37:22,603 ERROR: Exception on /HOW [POST] [in C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py:1455]
 Traceback (most recent call last):
   File "C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py", line 2070, in wsgi_app
     response = self.full_dispatch_request()
@@ -81,10 +96,10 @@ Traceback (most recent call last):
     return jsonify(HOW_pred())
   File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\data_make.py", line 256, in HOW_pred
     hydrogenLeakageVol = trunc(H2LeakageCalSave(hydrogenLeakageVol, collectionTime))
-  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 128, in H2LeakageCalSave
-    return (sum(H2LeakageCal[:19]['leakage']) + H2LeakageVol) / 20 if len(H2LeakageCal) > 20 else 0
-TypeError: list indices must be integers or slices, not str
-2022-04-17 16:01:25,883 ERROR: Exception on /HOW [POST] [in C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py:1455]
+  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 132, in H2LeakageCalSave
+    H2LeakageVol = max(H2LeakageCal[0]['leakage'] + (H2LeakageVol - H2LeakageCal[-1]['leakage']) / (length + 1), 0)
+IndexError: list index out of range
+2022-05-10 20:37:22,802 ERROR: Exception on /HOW [POST] [in C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py:1455]
 Traceback (most recent call last):
   File "C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py", line 2070, in wsgi_app
     response = self.full_dispatch_request()
@@ -98,24 +113,6 @@ Traceback (most recent call last):
     return jsonify(HOW_pred())
   File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\data_make.py", line 256, in HOW_pred
     hydrogenLeakageVol = trunc(H2LeakageCalSave(hydrogenLeakageVol, collectionTime))
-  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 128, in H2LeakageCalSave
-    return (sum(H2LeakageCal[:19]['leakage']) + H2LeakageVol) / 20 if len(H2LeakageCal) > 20 else 0
-TypeError: list indices must be integers or slices, not str
-2022-04-17 16:03:08,149 INFO: LaiZhou startup [in C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\__init__.py:34]
-2022-04-17 16:03:08,929 ERROR: Exception on /HOW [POST] [in C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py:1455]
-Traceback (most recent call last):
-  File "C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py", line 2070, in wsgi_app
-    response = self.full_dispatch_request()
-  File "C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py", line 1515, in full_dispatch_request
-    rv = self.handle_user_exception(e)
-  File "C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py", line 1513, in full_dispatch_request
-    rv = self.dispatch_request()
-  File "C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py", line 1499, in dispatch_request
-    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
-  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\main\routes.py", line 19, in H2_oil_water
-    return jsonify(HOW_pred())
-  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\data_make.py", line 256, in HOW_pred
-    hydrogenLeakageVol = trunc(H2LeakageCalSave(hydrogenLeakageVol, collectionTime))
-  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 127, in H2LeakageCalSave
-    return (sum(H2LeakageCal[:19]['leakage']) + H2LeakageVol) / 20 if len(H2LeakageCal) > 20 else 0
-TypeError: list indices must be integers or slices, not str
+  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 132, in H2LeakageCalSave
+    H2LeakageVol = max(H2LeakageCal[0]['leakage'] + (H2LeakageVol - H2LeakageCal[-1]['leakage']) / (length + 1), 0)
+IndexError: list index out of range

@@ -1,4 +1,4 @@
-2022-04-17 15:25:42,233 ERROR: Exception on /HOW [POST] [in C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py:1455]
+2022-04-17 15:59:10,060 ERROR: Exception on /HOW [POST] [in C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py:1455]
 Traceback (most recent call last):
   File "C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py", line 2070, in wsgi_app
     response = self.full_dispatch_request()
@@ -11,11 +11,11 @@ Traceback (most recent call last):
   File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\main\routes.py", line 19, in H2_oil_water
     return jsonify(HOW_pred())
   File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\data_make.py", line 256, in HOW_pred
-    H2LeakageCalSave(hydrogenLeakageVol, collectionTime)
-  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 120, in H2LeakageCalSave
-    H2LeakageCal + [dict(zip(['time', 'leakage'], [collectionTime + H2LeakageVol]))]
-TypeError: must be str, not int
-2022-04-17 15:25:42,825 ERROR: Exception on /HOW [POST] [in C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py:1455]
+    hydrogenLeakageVol = trunc(H2LeakageCalSave(hydrogenLeakageVol, collectionTime))
+  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 127, in H2LeakageCalSave
+    print(sum(H2LeakageCal[:19]))
+TypeError: unsupported operand type(s) for +: 'int' and 'dict'
+2022-04-17 15:59:10,688 ERROR: Exception on /HOW [POST] [in C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py:1455]
 Traceback (most recent call last):
   File "C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py", line 2070, in wsgi_app
     response = self.full_dispatch_request()
@@ -28,11 +28,11 @@ Traceback (most recent call last):
   File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\main\routes.py", line 19, in H2_oil_water
     return jsonify(HOW_pred())
   File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\data_make.py", line 256, in HOW_pred
-    H2LeakageCalSave(hydrogenLeakageVol, collectionTime)
-  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 120, in H2LeakageCalSave
-    H2LeakageCal + [dict(zip(['time', 'leakage'], [collectionTime + H2LeakageVol]))]
-TypeError: must be str, not int
-2022-04-17 15:25:43,393 ERROR: Exception on /HOW [POST] [in C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py:1455]
+    hydrogenLeakageVol = trunc(H2LeakageCalSave(hydrogenLeakageVol, collectionTime))
+  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 127, in H2LeakageCalSave
+    print(sum(H2LeakageCal[:19]))
+TypeError: unsupported operand type(s) for +: 'int' and 'dict'
+2022-04-17 15:59:11,295 ERROR: Exception on /HOW [POST] [in C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py:1455]
 Traceback (most recent call last):
   File "C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py", line 2070, in wsgi_app
     response = self.full_dispatch_request()
@@ -45,11 +45,11 @@ Traceback (most recent call last):
   File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\main\routes.py", line 19, in H2_oil_water
     return jsonify(HOW_pred())
   File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\data_make.py", line 256, in HOW_pred
-    H2LeakageCalSave(hydrogenLeakageVol, collectionTime)
-  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 120, in H2LeakageCalSave
-    H2LeakageCal + [dict(zip(['time', 'leakage'], [collectionTime + H2LeakageVol]))]
-TypeError: must be str, not int
-2022-04-17 15:25:43,943 ERROR: Exception on /HOW [POST] [in C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py:1455]
+    hydrogenLeakageVol = trunc(H2LeakageCalSave(hydrogenLeakageVol, collectionTime))
+  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 127, in H2LeakageCalSave
+    print(sum(H2LeakageCal[:19]))
+TypeError: unsupported operand type(s) for +: 'int' and 'dict'
+2022-04-17 15:59:11,887 ERROR: Exception on /HOW [POST] [in C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py:1455]
 Traceback (most recent call last):
   File "C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py", line 2070, in wsgi_app
     response = self.full_dispatch_request()
@@ -62,11 +62,11 @@ Traceback (most recent call last):
   File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\main\routes.py", line 19, in H2_oil_water
     return jsonify(HOW_pred())
   File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\data_make.py", line 256, in HOW_pred
-    H2LeakageCalSave(hydrogenLeakageVol, collectionTime)
-  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 120, in H2LeakageCalSave
-    H2LeakageCal + [dict(zip(['time', 'leakage'], [collectionTime + H2LeakageVol]))]
-TypeError: must be str, not int
-2022-04-17 15:25:44,511 ERROR: Exception on /HOW [POST] [in C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py:1455]
+    hydrogenLeakageVol = trunc(H2LeakageCalSave(hydrogenLeakageVol, collectionTime))
+  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 127, in H2LeakageCalSave
+    print(sum(H2LeakageCal[:19]))
+TypeError: unsupported operand type(s) for +: 'int' and 'dict'
+2022-04-17 15:59:12,489 ERROR: Exception on /HOW [POST] [in C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py:1455]
 Traceback (most recent call last):
   File "C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py", line 2070, in wsgi_app
     response = self.full_dispatch_request()
@@ -79,11 +79,11 @@ Traceback (most recent call last):
   File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\main\routes.py", line 19, in H2_oil_water
     return jsonify(HOW_pred())
   File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\data_make.py", line 256, in HOW_pred
-    H2LeakageCalSave(hydrogenLeakageVol, collectionTime)
-  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 120, in H2LeakageCalSave
-    H2LeakageCal + [dict(zip(['time', 'leakage'], [collectionTime + H2LeakageVol]))]
-TypeError: must be str, not int
-2022-04-17 15:25:45,097 ERROR: Exception on /HOW [POST] [in C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py:1455]
+    hydrogenLeakageVol = trunc(H2LeakageCalSave(hydrogenLeakageVol, collectionTime))
+  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 127, in H2LeakageCalSave
+    print(sum(H2LeakageCal[:19]))
+TypeError: unsupported operand type(s) for +: 'int' and 'dict'
+2022-04-17 15:59:13,085 ERROR: Exception on /HOW [POST] [in C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py:1455]
 Traceback (most recent call last):
   File "C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py", line 2070, in wsgi_app
     response = self.full_dispatch_request()
@@ -96,14 +96,11 @@ Traceback (most recent call last):
   File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\main\routes.py", line 19, in H2_oil_water
     return jsonify(HOW_pred())
   File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\data_make.py", line 256, in HOW_pred
-    H2LeakageCalSave(hydrogenLeakageVol, collectionTime)
-  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 120, in H2LeakageCalSave
-    H2LeakageCal + [dict(zip(['time', 'leakage'], [collectionTime + H2LeakageVol]))]
-TypeError: must be str, not int
-2022-04-17 15:26:15,973 INFO: LaiZhou startup [in C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\__init__.py:34]
-2022-04-17 15:27:53,883 INFO: LaiZhou startup [in C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\__init__.py:34]
-2022-04-17 15:29:01,075 INFO: LaiZhou startup [in C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\__init__.py:34]
-2022-04-17 15:29:04,198 ERROR: Exception on /HOW [POST] [in C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py:1455]
+    hydrogenLeakageVol = trunc(H2LeakageCalSave(hydrogenLeakageVol, collectionTime))
+  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 127, in H2LeakageCalSave
+    print(sum(H2LeakageCal[:19]))
+TypeError: unsupported operand type(s) for +: 'int' and 'dict'
+2022-04-17 15:59:13,709 ERROR: Exception on /HOW [POST] [in C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py:1455]
 Traceback (most recent call last):
   File "C:\Anaconda3\envs\flask\lib\site-packages\flask\app.py", line 2070, in wsgi_app
     response = self.full_dispatch_request()
@@ -115,8 +112,8 @@ Traceback (most recent call last):
     return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
   File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\main\routes.py", line 19, in H2_oil_water
     return jsonify(HOW_pred())
-  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\data_make.py", line 257, in HOW_pred
-    H2FillJudge()
-  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 126, in H2FillJudge
-    print(Config.x)
-AttributeError: type object 'Config' has no attribute 'x'
+  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\data_make.py", line 256, in HOW_pred
+    hydrogenLeakageVol = trunc(H2LeakageCalSave(hydrogenLeakageVol, collectionTime))
+  File "C:\Users\jsy19\OneDrive - 薅羊毛大学\文档\mystuff\LaiZhouX\app\data\func_store.py", line 127, in H2LeakageCalSave
+    print(sum(H2LeakageCal[:19]))
+TypeError: unsupported operand type(s) for +: 'int' and 'dict'
