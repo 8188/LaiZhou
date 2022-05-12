@@ -103,20 +103,20 @@ def H2LeakageVol(genVol):
             P1, t1, B1, P2, t2, B2 = [0] * 6
 
             for i in range(Constant.H2_LEAKAGE_DATA_FILTER_TIME):
-                P2 += H2LeakageData[i]['P']
-                t2 += H2LeakageData[i]['t_steam'] + H2LeakageData[i]['t_excitation']
-                B2 += H2LeakageData[i]['B'] 
-            P2 /= Constant.H2_LEAKAGE_DATA_FILTER_TIME
-            t2 /= Constant.H2_LEAKAGE_DATA_FILTER_TIME * 2
-            B2 *= Constant.KPA_TO_MPA_FACTOR / Constant.H2_LEAKAGE_DATA_FILTER_TIME
-
-            for i in range(-1, -Constant.H2_LEAKAGE_DATA_FILTER_TIME - 1, -1):
                 P1 += H2LeakageData[i]['P']
                 t1 += H2LeakageData[i]['t_steam'] + H2LeakageData[i]['t_excitation']
-                B1 += H2LeakageData[i]['B']
+                B1 += H2LeakageData[i]['B'] 
             P1 /= Constant.H2_LEAKAGE_DATA_FILTER_TIME
             t1 /= Constant.H2_LEAKAGE_DATA_FILTER_TIME * 2
             B1 *= Constant.KPA_TO_MPA_FACTOR / Constant.H2_LEAKAGE_DATA_FILTER_TIME
+
+            for i in range(-1, -Constant.H2_LEAKAGE_DATA_FILTER_TIME - 1, -1):
+                P2 += H2LeakageData[i]['P']
+                t2 += H2LeakageData[i]['t_steam'] + H2LeakageData[i]['t_excitation']
+                B2 += H2LeakageData[i]['B']
+            P2 /= Constant.H2_LEAKAGE_DATA_FILTER_TIME
+            t2 /= Constant.H2_LEAKAGE_DATA_FILTER_TIME * 2
+            B2 *= Constant.KPA_TO_MPA_FACTOR / Constant.H2_LEAKAGE_DATA_FILTER_TIME
             # print(P1, B1, t1, P2, B2, t2)
             leakageVolume = Constant.GAS_CONSTANT * genVol \
                 * ((P1 + B1) / (Constant.C_TO_K_FACTOR + t1) - (P2 + B2) / (Constant.C_TO_K_FACTOR + t2))
@@ -130,7 +130,7 @@ def H2LeakageCalSave(H2LeakageVol, collectionTime):
 
     length = len(H2LeakageCal)
     if length > Constant.H2_LEAKAGE_CAL_FILTER_TIME:
-        H2LeakageVol = max(H2LeakageCal[0]['leakage'] + (H2LeakageVol - H2LeakageCal[-1]['leakage']) / (length + 1), 0)
+        H2LeakageVol = max(H2LeakageCal[-1]['leakage'] + (H2LeakageVol - H2LeakageCal[0]['leakage']) / (length + 1), 0)
     H2LeakageVol *= Constant.H2_LEAKAGE_MODIFICATION_FACTOR
     # print(H2LeakageVol)    
     redisHSet(
