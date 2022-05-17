@@ -184,68 +184,93 @@ def HOW_pred():
         for i in range(len(H2Lkg_advice)):
             if H2Lkg_advice[i]['adv'][0]:
                 diagResult.append(
-                    DiagResult(content=list(H2Lkg_p.keys())[i], level=H2Lkg_level, part='氢系统', 
-                    alarmValue=list(H2Lkg_p.values())[i], handleSuggest=H2Lkg_advice[i]['adv'][0]).__dict__,
+                    DiagResult(
+                        content=list(H2Lkg_p.keys())[i], level=H2Lkg_level, part='氢系统', 
+                        alarmValue=list(H2Lkg_p.values())[i], substdCode='10MKG71CP101',
+                        handleSuggest=H2Lkg_advice[i]['adv'][0]).__dict__,
                 )
 
         for i in range(len(OilIn_advice)):
             if OilIn_advice[i]['adv'][0]:
                 diagResult.append(
-                    DiagResult(content=list(OilIn_p.keys())[i], level=OilIn_level, part='油系统', 
-                    alarmValue=list(OilIn_p.values())[i], handleSuggest=OilIn_advice[i]['adv'][0]).__dict__,
+                    DiagResult(
+                        content=list(OilIn_p.keys())[i], level=OilIn_level, part='油系统', 
+                        alarmValue=list(OilIn_p.values())[i], substdCode='10MKW10CP006',
+                        handleSuggest=OilIn_advice[i]['adv'][0]).__dict__,
                 )
 
         if H2Pur_advice[0]['adv'][0]:
             diagResult.append(
-                DiagResult(content=list(H2Pur_p.keys())[0], level=H2Pur_level, part='氢系统', 
-                alarmValue=list(H2Pur_p.values())[0], handleSuggest=H2Pur_advice[0]['adv'][0]).__dict__,
+                DiagResult(
+                    content=list(H2Pur_p.keys())[0], level=H2Pur_level, part='氢系统', 
+                    alarmValue=list(H2Pur_p.values())[0], substdCode='10MKG60CQ101',
+                    handleSuggest=H2Pur_advice[0]['adv'][0]).__dict__,
             )
         if H2Hum_advice[0]['adv'][0]:
             diagResult.append(
-                DiagResult(content=list(H2Hum_p.keys())[0], level=H2Hum_level, part='氢系统', 
-                alarmValue=list(H2Hum_p.values())[0], handleSuggest=H2Hum_advice[0]['adv'][0]).__dict__,
+                DiagResult(
+                    content=list(H2Hum_p.keys())[0], level=H2Hum_level, part='氢系统', 
+                    alarmValue=list(H2Hum_p.values())[0], substdCode='10MKG61CM102',
+                    handleSuggest=H2Hum_advice[0]['adv'][0]).__dict__,
             )
         
         for i in range(len(OilFB_advice)):
             if OilFB_advice[i]['adv'][0]:
                 diagResult.append(
-                    DiagResult(content=list(OilFB_p.keys())[i], level=OilFB_level[i], part='油系统', 
-                    alarmValue=list(OilFB_p.values())[i], handleSuggest=OilFB_advice[i]['adv'][0]).__dict__,
+                    DiagResult(
+                        content=list(OilFB_p.keys())[i], level=OilFB_level[i], part='油系统', 
+                        alarmValue=list(OilFB_p.values())[i], substdCode='10MKW10CP004',
+                        handleSuggest=OilFB_advice[i]['adv'][0]).__dict__,
                 )
 
         if OilWC_advice[0]['adv'][0]:
             diagResult.append(
-                DiagResult(content=list(OilWC_p.keys())[0], level=OilWC_level, part='油系统', 
-                alarmValue=list(OilWC_p.values())[0], handleSuggest=OilWC_advice[0]['adv'][0]).__dict__,
+                DiagResult(
+                    content=list(OilWC_p.keys())[0], level=OilWC_level, part='油系统', 
+                    alarmValue=list(OilWC_p.values())[0], handleSuggest=OilWC_advice[0]['adv'][0]).__dict__,
             )
         if WaterFlow_advice[0]['adv'][0]:
             diagResult.append(
-                DiagResult(content=list(WaterFlow_p.keys())[0], level=WaterFlow_level, part='水系统', 
-                alarmValue=list(WaterFlow_p.values())[0], handleSuggest=WaterFlow_advice[0]['adv'][0]).__dict__,
+                DiagResult(
+                    content=list(WaterFlow_p.keys())[0], level=WaterFlow_level, part='水系统', 
+                    alarmValue=list(WaterFlow_p.values())[0], substdCode='10MKF50CF101',
+                    handleSuggest=WaterFlow_advice[0]['adv'][0]).__dict__,
             )
         if WaterCond_advice[0]['adv'][0]:
             diagResult.append(
-                DiagResult(content=list(WaterCond_p.keys())[0], level=WaterCond_level, part='水系统', 
-                alarmValue=list(WaterCond_p.values())[0], handleSuggest=WaterCond_advice[0]['adv'][0]).__dict__,
+                DiagResult(
+                    content=list(WaterCond_p.keys())[0], level=WaterCond_level, part='水系统', 
+                    alarmValue=list(WaterCond_p.values())[0], substdCode='10MKF13CQ101',
+                    handleSuggest=WaterCond_advice[0]['adv'][0]).__dict__,
             )
         if WaterPH_advice[0]['adv'][0]:
             diagResult.append(
-                DiagResult(content=list(WaterPH_p.keys())[0], level=WaterPH_level, part='水系统', 
-                alarmValue=list(WaterPH_p.values())[0], handleSuggest=WaterPH_advice[0]['adv'][0]).__dict__,
+                DiagResult(
+                    content=list(WaterPH_p.keys())[0], level=WaterPH_level, part='水系统', 
+                    alarmValue=list(WaterPH_p.values())[0], handleSuggest=WaterPH_advice[0]['adv'][0]).__dict__,
             )
 
         for i in range(len(Oil_advice)):
             if Oil_advice[i]['adv'][0]:
                 diagResult.append(
-                    DiagResult(content=list(Oil_p.keys())[i], level=Oil_level[i], part='油系统', 
-                    alarmValue=list(Oil_p.values())[i], handleSuggest=Oil_advice[i]['adv'][0]).__dict__,
+                    DiagResult(
+                        content=list(Oil_p.keys())[i], level=Oil_level[i], part='油系统', 
+                        alarmValue=list(Oil_p.values())[i], handleSuggest=Oil_advice[i]['adv'][0]).__dict__,
                 )
 
+        Water_advice_code = None
         for i in range(len(Water_advice)):
             if Water_advice[i]['adv'][0]:
+                if i == 2:
+                    Water_advice_code = '10MKF13CT303'
+                elif i == 4:
+                    Water_advice_code = '10MKF16CT301'
+
                 diagResult.append(
-                    DiagResult(content=list(Water_p.keys())[i], level=Water_level[i], part='水系统', 
-                    alarmValue=list(Water_p.values())[i], handleSuggest=Water_advice[i]['adv'][0]).__dict__,
+                    DiagResult(
+                        content=list(Water_p.keys())[i], level=Water_level[i], part='水系统', 
+                        alarmValue=list(Water_p.values())[i], substdCode=Water_advice_code,
+                        handleSuggest=Water_advice[i]['adv'][0]).__dict__,
                 )
 
         diagResult.append(
