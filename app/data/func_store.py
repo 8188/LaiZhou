@@ -96,8 +96,6 @@ def H2LeakageVol(genVol):
     H2LeakageData = rdb.hget(Config.TABLE_H2_LEAKAGE_DATA, Config.KEY_H2_LEAKAGE_DATA)
     if H2LeakageData:
         H2LeakageData = eval(H2LeakageData)
-        if H2FillJudge():
-            return 0
             
         if len(H2LeakageData) > 2 * Constant.H2_LEAKAGE_DATA_FILTER_TIME:  
             P1, t1, B1, P2, t2, B2 = [0] * 6
@@ -133,10 +131,13 @@ def H2LeakageCalSave(H2LeakageVol, collectionTime):
         H2LeakageVol = max(H2LeakageCal[-1]['leakage'] + (H2LeakageVol - H2LeakageCal[0]['leakage']) / (length + 1), 0)
     H2LeakageVol *= Constant.H2_LEAKAGE_MODIFICATION_FACTOR
     # print(H2LeakageVol)    
-    redisHSet(
-        rdb=rdb, maxCapacity=Constant.MAX_CAPACITY_TABLE_H2_LEAKAGE_CAL, tableName=Config.TABLE_H2_LEAKAGE_CAL,
-        key=Config.KEY_H2_LEAKAGE_CAL, dataNow=[H2LeakageVol], columnNames=['leakage'],
-        collectionTime=collectionTime, dataHGet=H2LeakageCal, expireTime=Constant.TABLE_H2_LEAKAGE_CAL_EXPIRE_TIME)
+    if not H2FillJudge():
+        redisHSet(
+            rdb=rdb, maxCapacity=Constant.MAX_CAPACITY_TABLE_H2_LEAKAGE_CAL, tableName=Config.TABLE_H2_LEAKAGE_CAL,
+            key=Config.KEY_H2_LEAKAGE_CAL, dataNow=[H2LeakageVol], columnNames=['leakage'],
+            collectionTime=collectionTime, dataHGet=H2LeakageCal, expireTime=Constant.TABLE_H2_LEAKAGE_CAL_EXPIRE_TIME)
+    else:
+        return H2LeakageCal[-1]['leakage']
 
     return H2LeakageVol
 
