@@ -214,12 +214,13 @@ def HOW_pred():
                     handleSuggest=H2Hum_advice[0]['adv'][0]).__dict__,
             )
         
+        FB_3DCode = ['10MKW10CP004', '10MKW10CP005']
         for i in range(len(OilFB_advice)):
             if OilFB_advice[i]['adv'][0]:
                 diagResult.append(
                     DiagResult(
                         content=list(OilFB_p.keys())[i], level=OilFB_level[i], part='油系统', 
-                        alarmValue=list(OilFB_p.values())[i], substdCode='10MKW10CP004',
+                        alarmValue=list(OilFB_p.values())[i], substdCode=FB_3DCode[i],
                         handleSuggest=OilFB_advice[i]['adv'][0]).__dict__,
                 )
 
