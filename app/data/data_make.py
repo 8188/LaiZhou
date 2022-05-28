@@ -43,7 +43,7 @@ def HOW_pred():
         H2Pur_pur = np.array([df[i][9] for i in range(df_length)])
         H2Hum_hum = np.array([df[i][10] for i in range(df_length)])
         OilIn_prsDif = np.array([df[i][11] for i in range(df_length)])
-        OilWC_wc = np.array([df[i][12] for i in range(df_length)])
+        OilWC_wc = np.array([df[i][12] for i in range(df_length)]) * Constant.OIL_WATERCONTENT_CONVERTION
         WaterCond_cond = np.array([df[i][13] for i in range(df_length)])
         WaterPH_PH = np.array([df[i][14] for i in range(df_length)])
         WaterFlow_flow = np.array([df[i][15] for i in range(df_length)])
