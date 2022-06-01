@@ -279,7 +279,7 @@ def HOW_pred():
         )
 
         hydrogenLeakageVol = H2LeakageVol(Constant.VOLUME_GENERATOR)
-        hydrogenLeakageVol = trunc(H2LeakageCalSave(hydrogenLeakageVol, collectionTime))
+        hydrogenLeakageVol = trunc(hydrogenLeakageVol)
         
         hydrogenLeakage = DisplayLogic.lkg(list(H2Lkg_p.values()), hydrogenLeakageVol)
         filterBlock = DisplayLogic.fbl(list(OilFB_p.values()))

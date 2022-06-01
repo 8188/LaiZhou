@@ -1,3 +1,4 @@
+from os import times
 import simplejson as json
 import pandas as pd
 import time
@@ -39,11 +40,15 @@ def js2rd(js):
             substdCode.append(c)
             srcValue.append(None)
 
-    collectionTime = js['collectionTime']
-    collectionTime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(collectionTime)) # +3600*8
+    timeStamp = js['collectionTime']
+    collectionTime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(timeStamp)) # +3600*8
+
+    H2LeakageDataCodesBegin = ['10AIRCP001', '10MKG71CP101', '10MKG80CT301', '10MKG80CT304'] # from end of fill H2
+    H2LeakageColumnNamesBegin = ['B', 'P', 't_steam', 't_excitation']
+    H2LeakageDataCodes = H2LeakageDataCodesBegin + ['10MKG80CF101']
+    H2LeakageColumnNames = H2LeakageColumnNamesBegin + ['volFilled']
 
     data_H2LeakgeVol = []
-    H2LeakageDataCodes = ['10AIRCP001', '10MKG71CP101', '10MKG80CT301', '10MKG80CT304']
     for c in H2LeakageDataCodes:
         if c in list(rawDataPackage.keys()):
             data_H2LeakgeVol.append(rawDataPackage[c]['srcValue'])
@@ -51,11 +56,42 @@ def js2rd(js):
     if len(data_H2LeakgeVol)==len(H2LeakageDataCodes):
         H2LeakageData = rdb.hget(Config.TABLE_H2_LEAKAGE_DATA, Config.KEY_H2_LEAKAGE_DATA)
         H2LeakageData = list(eval(H2LeakageData)) if H2LeakageData else []
-         
-        redisHSet(
-            rdb=rdb, maxCapacity=Constant.MAX_CAPACITY_TABLE_H2_LEAKAGE_DATA, tableName=Config.TABLE_H2_LEAKAGE_DATA,
-            key=Config.KEY_H2_LEAKAGE_DATA, dataNow=data_H2LeakgeVol, columnNames=['B', 'P', 't_steam', 't_excitation'],
-            collectionTime=collectionTime, dataHGet=H2LeakageData, expireTime=Constant.TABLE_H2_LEAKAGE_DATA_EXPIRE_TIME)
+
+        if data_H2LeakgeVol['10MKG80CF101'] > Constant.H2_FILL_JUDGE_UPPER_BOUND:
+            rdb.hdel(Config.TABLE_H2_LEAKAGE_DATA, Config.KEY_H2_LEAKAGE_DATA)
+            rdb.hdel(Config.TABLE_H2_LEAKAGE_DATA_BEGIN, Config.KEY_H2_LEAKAGE_DATA_BEGIN) # delete fill H2 as well
+        elif data_H2LeakgeVol['10MKG80CF101'] < Constant.H2_FILL_JUDGE_LOWER_BOUND:
+            redisHSet(
+                rdb=rdb, maxCapacity=Constant.MAX_CAPACITY_TABLE_H2_LEAKAGE_DATA, tableName=Config.TABLE_H2_LEAKAGE_DATA,
+                key=Config.KEY_H2_LEAKAGE_DATA, dataNow=data_H2LeakgeVol, columnNames=H2LeakageColumnNames,
+                collectionTime=timeStamp, dataHGet=H2LeakageData, expireTime=Constant.TABLE_H2_LEAKAGE_DATA_EXPIRE_TIME)
+
+    H2LeakageDataBegin = rdb.hget(Config.TABLE_H2_LEAKAGE_DATA_BEGIN, Config.KEY_H2_LEAKAGE_DATA_BEGIN)
+    H2LeakageDataBegin = list(eval(H2LeakageDataBegin)) if H2LeakageDataBegin else []
+    if len(H2LeakageDataBegin) < Constant.MAX_CAPACITY_TABLE_H2_LEAKAGE_BEGIN:
+        data_H2LeakgeVolBegin = data_H2LeakgeVol[:len(H2LeakageDataCodesBegin)] 
+
+        if len(data_H2LeakgeVolBegin)==len(H2LeakageDataCodesBegin):
+            redisHSet(
+                rdb=rdb, maxCapacity=Constant.MAX_CAPACITY_TABLE_H2_LEAKAGE_DATA_BEGIN, tableName=Config.TABLE_H2_LEAKAGE_DATA_BEGIN,
+                key=Config.KEY_H2_LEAKAGE_DATA_BEGIN, dataNow=data_H2LeakgeVolBegin, columnNames=H2LeakageColumnNamesBegin,
+                collectionTime=timeStamp, dataHGet=H2LeakageDataBegin, expireTime=Constant.TABLE_H2_LEAKAGE_BEGIN_EXPIRE_TIME)
+    elif len(H2LeakageDataBegin) == Constant.MAX_CAPACITY_TABLE_H2_LEAKAGE_BEGIN:
+        tempB, tempP, tempT_steam, tempT_excitation = [0] * 4
+        for i in range(Constant.MAX_CAPACITY_TABLE_H2_LEAKAGE_BEGIN):
+            tempB += H2LeakageDataBegin[i]['B']
+            tempP += H2LeakageDataBegin[i]['P']
+            tempT_steam += H2LeakageDataBegin[i]['t_steam']
+            tempT_excitation += H2LeakageDataBegin[i]['t_excitation']
+        tempB /= Constant.MAX_CAPACITY_TABLE_H2_LEAKAGE_BEGIN
+        tempP /= Constant.MAX_CAPACITY_TABLE_H2_LEAKAGE_BEGIN
+        tempT_steam /= Constant.MAX_CAPACITY_TABLE_H2_LEAKAGE_BEGIN
+        tempT_excitation /= Constant.MAX_CAPACITY_TABLE_H2_LEAKAGE_BEGIN
+        dataMean = [tempB, tempP, tempT_steam, tempT_excitation]
+
+        res = dict(zip(['time'] + H2LeakageColumnNamesBegin, [timeStamp] + dataMean))
+
+        rdb.hset(Config.TABLE_H2_LEAKAGE_DATA_BEGIN, Config.KEY_H2_LEAKAGE_DATA_BEGIN, str(H2LeakageDataBegin + [res]))
 
     dataTemp = rdb.hget(Config.TABLE_MAIN, Config.KEY_MAIN)
     if not dataTemp:
@@ -94,61 +130,29 @@ def rd2pd():
 
 def H2LeakageVol(genVol):
     H2LeakageData = rdb.hget(Config.TABLE_H2_LEAKAGE_DATA, Config.KEY_H2_LEAKAGE_DATA)
+    H2LeakageDataBegin = rdb.hget(Config.TABLE_H2_LEAKAGE_DATA_BEGIN, Config.KEY_H2_LEAKAGE_DATA_BEGIN)
+
     if H2LeakageData:
         H2LeakageData = eval(H2LeakageData)
-            
-        if len(H2LeakageData) > 2 * Constant.H2_LEAKAGE_DATA_FILTER_TIME:  
-            P1, t1, B1, P2, t2, B2 = [0] * 6
 
-            for i in range(Constant.H2_LEAKAGE_DATA_FILTER_TIME):
-                P1 += H2LeakageData[i]['P']
-                t1 += H2LeakageData[i]['t_steam'] + H2LeakageData[i]['t_excitation']
-                B1 += H2LeakageData[i]['B'] 
-            P1 /= Constant.H2_LEAKAGE_DATA_FILTER_TIME
-            t1 /= Constant.H2_LEAKAGE_DATA_FILTER_TIME * 2
-            B1 *= Constant.KPA_TO_MPA_FACTOR / Constant.H2_LEAKAGE_DATA_FILTER_TIME
+        if H2LeakageData[-1]['P'] > Constant.H2_PRESSURE_MIN:
+            if len(H2LeakageData) >= Constant.H2_LEAKAGE_DATA_FILTER_TIME:  
+                P1 = H2LeakageDataBegin[-1]['P']
+                t1 = (H2LeakageDataBegin[-1]['t_steam'] + H2LeakageDataBegin[-1]['t_excitation']) / 2
+                B1 = H2LeakageDataBegin[-1]['B'] * Constant.KPA_TO_MPA_FACTOR
 
-            for i in range(-1, -Constant.H2_LEAKAGE_DATA_FILTER_TIME - 1, -1):
-                P2 += H2LeakageData[i]['P']
-                t2 += H2LeakageData[i]['t_steam'] + H2LeakageData[i]['t_excitation']
-                B2 += H2LeakageData[i]['B']
-            P2 /= Constant.H2_LEAKAGE_DATA_FILTER_TIME
-            t2 /= Constant.H2_LEAKAGE_DATA_FILTER_TIME * 2
-            B2 *= Constant.KPA_TO_MPA_FACTOR / Constant.H2_LEAKAGE_DATA_FILTER_TIME
-            # print(P1, B1, t1, P2, B2, t2)
-            leakageVolume = Constant.GAS_CONSTANT * genVol \
-                * ((P1 + B1) / (Constant.C_TO_K_FACTOR + t1) - (P2 + B2) / (Constant.C_TO_K_FACTOR + t2))
-            
-            return max(leakageVolume, 0)
+                P2, t2, B2 = [0] * 3
+                for i in range(-1, -Constant.H2_LEAKAGE_DATA_FILTER_TIME - 1, -1):
+                    P2 += H2LeakageData[i]['P']
+                    t2 += H2LeakageData[i]['t_steam'] + H2LeakageData[i]['t_excitation']
+                    B2 += H2LeakageData[i]['B']
+                P2 /= Constant.H2_LEAKAGE_DATA_FILTER_TIME
+                t2 /= Constant.H2_LEAKAGE_DATA_FILTER_TIME * 2
+                B2 *= Constant.KPA_TO_MPA_FACTOR / Constant.H2_LEAKAGE_DATA_FILTER_TIME
+                # print(P1, B1, t1, P2, B2, t2)
+                interval = (H2LeakageData[-1] - H2LeakageDataBegin[-1]) / 3600 + 1
+                leakageVolume = Constant.GAS_CONSTANT * genVol / interval * Constant.H2_LEAKAGE_MODIFICATION_FACTOR \
+                    * ((P1 + B1) / (Constant.C_TO_K_FACTOR + t1) - (P2 + B2) / (Constant.C_TO_K_FACTOR + t2))
+                
+                return max(leakageVolume, 0)
     return 0
-
-def H2LeakageCalSave(H2LeakageVol, collectionTime):
-    H2LeakageCal = rdb.hget(Config.TABLE_H2_LEAKAGE_CAL, Config.KEY_H2_LEAKAGE_CAL)
-    H2LeakageCal = list(eval(H2LeakageCal)) if H2LeakageCal else []
-
-    length = len(H2LeakageCal)
-    if length > Constant.H2_LEAKAGE_CAL_FILTER_TIME:
-        H2LeakageVol = max(H2LeakageCal[-1]['leakage'] + (H2LeakageVol - H2LeakageCal[0]['leakage']) / (length + 1), 0)
-    H2LeakageVol *= Constant.H2_LEAKAGE_MODIFICATION_FACTOR
-    # print(H2LeakageVol)    
-    if not H2FillJudge():
-        redisHSet(
-            rdb=rdb, maxCapacity=Constant.MAX_CAPACITY_TABLE_H2_LEAKAGE_CAL, tableName=Config.TABLE_H2_LEAKAGE_CAL,
-            key=Config.KEY_H2_LEAKAGE_CAL, dataNow=[H2LeakageVol], columnNames=['leakage'],
-            collectionTime=collectionTime, dataHGet=H2LeakageCal, expireTime=Constant.TABLE_H2_LEAKAGE_CAL_EXPIRE_TIME)
-    else:
-        return H2LeakageCal[-1]['leakage']
-
-    return H2LeakageVol
-
-def H2FillJudge():
-    H2LeakageCal = rdb.hget(Config.TABLE_H2_LEAKAGE_CAL, Config.KEY_H2_LEAKAGE_CAL)
-    if H2LeakageCal:
-        H2LeakageCal = eval(H2LeakageCal)
-        count = 0
-        if len(H2LeakageCal) > Constant.H2_FILL_JUDGE_NUMS:
-            for i in range(1, Constant.H2_FILL_JUDGE_NUMS + 1):
-                count += H2LeakageCal[i]['leakage'] > H2LeakageCal[i-1]['leakage']
-            if count > Constant.H2_FILL_JUDGE_NUMS * Constant.H2_FILL_JUDGE_RATIO:
-                return True
-    return False
