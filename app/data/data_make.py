@@ -1,7 +1,7 @@
 import numpy as np
 import warnings
 warnings.filterwarnings('ignore')
-from app.data.func_store import H2FillJudge, H2LeakageCalSave, js2rd, rd2pd, H2LeakageVol
+from app.data.func_store import js2rd, rd2pd, H2LeakageVol
 from app.data.data_format import OutputData, DiagResult, CalcResult, ModelResult, MainState, Monitor, Display, Output
 from app.data.data_pipe import health_handle, rf_handle, mscred_H2, mscred_Oil, mscred_Water
 from app.data.parameters import Alarm, H2_leakage, H2_health, Oil_health, Water_health, RF_All, Constant
