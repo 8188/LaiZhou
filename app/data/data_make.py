@@ -135,49 +135,54 @@ def HOW_pred():
         
         H2Leakage = [
             OutputData(historyMax=Alarm.H2_leakage, name='内冷水箱泄漏量', tendencyPredict=around(H2Lkg_lkg[0]), 
-                predictionTime=t).__dict__,
+                predictionTime=t, srcCode='10MKG90CQ101XQ07').__dict__,
             OutputData(historyMax=Alarm.H2_leakage, name='密封油励侧回油泄漏量', tendencyPredict=around(H2Lkg_lkg[1]), 
-                predictionTime=t).__dict__,
+                predictionTime=t, srcCode='10MKG90CQ101XQ06').__dict__,
             OutputData(historyMax=Alarm.H2_leakage, name='密封油汽侧回油泄漏量', tendencyPredict=around(H2Lkg_lkg[2]), 
-                predictionTime=t).__dict__,
+                predictionTime=t, srcCode='10MKG90CQ101XQ08').__dict__,
             OutputData(historyMax=Alarm.H2_leakage, name='封闭母线A相泄漏量', tendencyPredict=around(H2Lkg_lkg[3]), 
-                predictionTime=t).__dict__,
+                predictionTime=t, srcCode='10MKG90CQ101XQ03').__dict__,
             OutputData(historyMax=Alarm.H2_leakage, name='封闭母线B相泄漏量', tendencyPredict=around(H2Lkg_lkg[4]), 
-                predictionTime=t).__dict__,
+                predictionTime=t, srcCode='10MKG90CQ101XQ04').__dict__,
             OutputData(historyMax=Alarm.H2_leakage, name='封闭母线C相泄漏量', tendencyPredict=around(H2Lkg_lkg[5]), 
-                predictionTime=t).__dict__,
+                predictionTime=t, srcCode='10MKG90CQ101XQ05').__dict__,
             OutputData(historyMax=Alarm.H2_leakage, name='封闭母线中性点1泄漏量', tendencyPredict=around(H2Lkg_lkg[6]), 
-                predictionTime=t).__dict__,
+                predictionTime=t, srcCode='10MKG90CQ101XQ01').__dict__,
             OutputData(historyMax=Alarm.H2_leakage, name='封闭母线中性点2泄漏量', tendencyPredict=around(H2Lkg_lkg[7]), 
-                predictionTime=t).__dict__,
+                predictionTime=t, srcCode='10MKG90CQ101XQ02').__dict__,
             OutputData(historyMax=Alarm.H2_pressure, name='发电机内氢气压力', tendencyPredict=around(H2Prs_prs), 
-                predictionTime=t).__dict__,
+                predictionTime=t, srcCode='10MKG71CP101').__dict__,
             ]
         
         OilIn = OutputData(historyMax=Alarm.Oil_H2_pressure_diff[1], historyMin=Alarm.Oil_H2_pressure_diff[0], 
-            name='油氢压差', tendencyPredict=around(OilIn_prsDif), predictionTime=t).__dict__,
+            name='油氢压差', tendencyPredict=around(OilIn_prsDif), predictionTime=t, srcCode='10MKW10CP006').__dict__,
         H2Purity = OutputData(historyMax=Alarm.H2_purity, name='氢气纯度', tendencyPredict=around(H2Pur_pur), 
-            predictionTime=t).__dict__,
+            predictionTime=t, srcCode='10MKG60CQ101').__dict__,
         H2Humidity = OutputData(historyMax=Alarm.H2_humidity, name='氢气湿度', tendencyPredict=around(H2Hum_hum), 
-            predictionTime=t).__dict__,
-        H2Health = OutputData(name='氢系统', measuredValue=H2_scores).__dict__,
+            predictionTime=t, srcCode='10MKG61CM102').__dict__,
+        H2Health = OutputData(name='氢系统', measuredValue=H2_scores, srcCode='10MKG10AG101').__dict__,
         OilFilterBlock = OutputData(name='油过滤器堵塞').__dict__,
         OilContent = OutputData(historyMax=Alarm.Water_content, name='密封油含水量', tendencyPredict=around(OilWC_wc), 
-            predictionTime=t).__dict__,
-        OilHealth = OutputData(name='油系统', measuredValue=Oil_scores).__dict__,
+            predictionTime=t, srcCode='10MKW12CQ101').__dict__,
+        OilHealth = OutputData(name='油系统', measuredValue=Oil_scores, srcCode='10MKW10AG101').__dict__,
         WaterFlow = OutputData(historyMax=Alarm.Water_Flow, name='定冷水流量', tendencyPredict=around(WaterFlow_flow), 
-            predictionTime=t).__dict__,
+            predictionTime=t, srcCode='10MKF40CF101').__dict__,
         WaterConductivity = OutputData(historyMax=Alarm.Water_conductivity, name='定冷水电导率', 
-            tendencyPredict=around(WaterCond_cond), predictionTime=t).__dict__,
+            tendencyPredict=around(WaterCond_cond), predictionTime=t, srcCode='10MKF13CQ101').__dict__,
         WaterPH = OutputData(historyMax=Alarm.Water_PH[1], historyMin=Alarm.Water_PH[0], name='定冷水PH值', 
-            tendencyPredict=around(WaterPH_PH), predictionTime=t).__dict__,
-        WaterHealth = OutputData(name='水系统', measuredValue=Water_scores).__dict__,
+            tendencyPredict=around(WaterPH_PH), predictionTime=t, srcCode='10MKF30CQ101').__dict__,
+        WaterHealth = OutputData(name='水系统', measuredValue=Water_scores, srcCode='10MKF10AG101').__dict__,
+
+        hydrogenLeakageVol = H2LeakageVol(Constant.VOLUME_GENERATOR)
+        hydrogenLeakageVol = trunc(hydrogenLeakageVol)
+        H2LeakageVol_History = OutputData(name='漏氢量', theoretic=hydrogenLeakageVol, srcCode='10MKG90CF101').__dict__,
 
         calcResult = CalcResult(
             H2Leakage=H2Leakage, OilIn=OilIn, H2Purity=H2Purity, 
             H2Humidity=H2Humidity, H2Health=H2Health, OilFilterBlock=OilFilterBlock, 
             OilContent=OilContent, OilHealth=OilHealth, WaterFlow=WaterFlow, 
-            WaterConductivity=WaterConductivity, WaterPH=WaterPH, WaterHealth=WaterHealth).__dict__,
+            WaterConductivity=WaterConductivity, WaterPH=WaterPH, WaterHealth=WaterHealth,
+            H2LeakageVol_History=H2LeakageVol_History).__dict__,
 
         diagResult = []
         
@@ -278,8 +283,6 @@ def HOW_pred():
             DiagResult(content=genStatus, level=Constant.LEVEL_GENERATOR_STATUS, alarmValue=bGenStop).__dict__
         )
 
-        hydrogenLeakageVol = H2LeakageVol(Constant.VOLUME_GENERATOR)
-        hydrogenLeakageVol = trunc(hydrogenLeakageVol)
         
         hydrogenLeakage = DisplayLogic.lkg(list(H2Lkg_p.values()), hydrogenLeakageVol)
         filterBlock = DisplayLogic.fbl(list(OilFB_p.values()))

@@ -3,3 +3,4 @@ model_new/
 __pycache__/
 logs/
 .ipynb_checkpoints/
+.VSCodeCounter/

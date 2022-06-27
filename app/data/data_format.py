@@ -1,7 +1,8 @@
 class OutputData(object):
     def __init__(self, historyMax=None, historyMin=None, measuredValue=None, 
                  name=None, statePredict=None, tendencyPredict=None, 
-                 predictionTime=None, theoretic=None, substdCode=None):
+                 predictionTime=None, theoretic=None, substdCode=None,
+                 srcCode=None):
         super().__init__()
         self.historyMax = historyMax
         self.historyMin = historyMin
@@ -12,6 +13,7 @@ class OutputData(object):
         self.predictionTime = predictionTime
         self.theoretic = theoretic
         self.substdCode = substdCode
+        self.srcCode = srcCode
 
 class DiagResult(object):
     def __init__(self, content=None, level=None, part=None, alarmValue=None, 
@@ -38,7 +40,8 @@ class CalcResult(object):
     def __init__(self, H2Leakage=None, OilIn=None, H2Purity=None, 
                  H2Humidity=None, H2Health=None, OilFilterBlock=None, 
                  OilContent=None, OilHealth=None, WaterFlow=None, 
-                 WaterConductivity=None, WaterPH=None, WaterHealth=None):
+                 WaterConductivity=None, WaterPH=None, WaterHealth=None,
+                 H2LeakageVol_History=None):
         super().__init__()
         self.H2Leakage = H2Leakage
         self.OilIn = OilIn
@@ -52,6 +55,7 @@ class CalcResult(object):
         self.WaterConductivity = WaterConductivity
         self.WaterPH = WaterPH
         self.WaterHealth = WaterHealth
+        self.H2LeakageVol_History = H2LeakageVol_History
 
 class ModelResult(object):
     def __init__(self, calcResult=None, diagResult=None, display=None, resultState=1):
