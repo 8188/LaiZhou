@@ -285,12 +285,12 @@ def HOW_pred():
 
         
         hydrogenLeakage = DisplayLogic.lkg(list(H2Lkg_p.values()), hydrogenLeakageVol)
-        filterBlock = DisplayLogic.fbl(list(OilFB_p.values()))
         generatorOilIn = DisplayLogic.oin(list(OilIn_p.values()))
         hydrogenQuality = DisplayLogic.h2q(list(H2Pur_p.values()), list(H2Hum_p.values()))
         oilQuality = DisplayLogic.oilq(list(OilWC_p.values())) 
         waterFlowLow = DisplayLogic.watf(list(WaterFlow_p.values()))
         waterQuality = DisplayLogic.watq(list(WaterCond_p.values()), list(WaterPH_p.values()))
+        filterBlock = DisplayLogic.fbl(list(OilFB_p.values()))
         systemMainstate = [
             MainState(name='漏氢状态', value=hydrogenLeakage[0], level=hydrogenLeakage[1]).__dict__,
             MainState(name='漏液状态', value=generatorOilIn[0], level=generatorOilIn[1]).__dict__,
@@ -306,10 +306,10 @@ def HOW_pred():
         hydrogenPurity = trunc(inputData['rawDataPackage']['10MKG60CQ101']['srcValue'])
         hydrogenHumidity = trunc(inputData['rawDataPackage']['10MKG61CM102']['srcValue'])
         hydrogenMainstate = [
-            MainState(name='漏氢速率', value=hydrogenLeakageVol, unit='m3/d', level=None).__dict__,
-            MainState(name='压力', value=hydrogenPressure, unit='MPa', level=None).__dict__,
-            MainState(name='纯度', value=hydrogenPurity, unit='%', level=None).__dict__,
-            MainState(name='露点温度', value=hydrogenHumidity, unit='℃', level=None).__dict__,
+            MainState(name='漏氢速率', value=hydrogenLeakageVol, unit='m3/d', level=None, srcCode='10MKG90CF101').__dict__,
+            MainState(name='压力', value=hydrogenPressure, unit='MPa', level=None, srcCode='10MKG71CP101').__dict__,
+            MainState(name='纯度', value=hydrogenPurity, unit='%', level=None, srcCode='10MKG60CQ101').__dict__,
+            MainState(name='露点温度', value=hydrogenHumidity, unit='℃', level=None, srcCode='10MKG61CM102').__dict__,
             ]
 
         oilH2PresDiff = trunc(inputData['rawDataPackage']['10MKW10CP006']['srcValue'])
@@ -317,10 +317,10 @@ def HOW_pred():
         floaterTankLev = trunc(inputData['rawDataPackage']['10MKW10CL102']['srcValue'])
         expansionSlotLev = '正常' if inputData['rawDataPackage']['10MKW32CL001']['srcValue'] == 0 else '高'
         oilMainstate = [
-            MainState(name='油氢压差', value=oilH2PresDiff, unit='KPa', level=None).__dict__,
-            MainState(name='真空油箱液位', value=vacuumTankLev, unit='mm', level=None).__dict__,
-            MainState(name='浮子油箱液位', value=floaterTankLev, unit='mm', level=None).__dict__,
-            MainState(name='扩大槽液位', value=expansionSlotLev, unit=None, level=None).__dict__,
+            MainState(name='油氢压差', value=oilH2PresDiff, unit='KPa', level=None, srcCode='10MKW10CP006').__dict__,
+            MainState(name='真空油箱液位', value=vacuumTankLev, unit='mm', level=None, srcCode='10MKW10CL101').__dict__,
+            MainState(name='浮子油箱液位', value=floaterTankLev, unit='mm', level=None, srcCode='10MKW10CL102').__dict__,
+            MainState(name='扩大槽液位', value=expansionSlotLev, unit=None, level=None, srcCode='10MKW32CL001').__dict__,
             ]
 
         genInWaterTemp = trunc(inputData['rawDataPackage']['10MKF16CT301']['srcValue'])
@@ -328,10 +328,10 @@ def HOW_pred():
         statorWatTankLev = trunc(inputData['rawDataPackage']['10MKF16CL101']['srcValue'])
         statorWatFlow = trunc(inputData['rawDataPackage']['10MKF40CF101']['srcValue'])
         waterMainstate = [
-            MainState(name='出水温度', value=genInWaterTemp, unit='℃', level=None).__dict__,
-            MainState(name='进水压力', value=statorWatInPressure, unit='KPa', level=None).__dict__,
-            MainState(name='水箱液位', value=statorWatTankLev, unit='mm', level=None).__dict__,
-            MainState(name='流量差压', value=statorWatFlow, unit='KPa', level=None).__dict__,
+            MainState(name='出水温度', value=genInWaterTemp, unit='℃', level=None, srcCode='10MKF16CT301').__dict__,
+            MainState(name='进水压力', value=statorWatInPressure, unit='KPa', level=None, srcCode='10MKF40CP100').__dict__,
+            MainState(name='水箱液位', value=statorWatTankLev, unit='mm', level=None, srcCode='10MKF16CL101').__dict__,
+            MainState(name='流量差压', value=statorWatFlow, unit='KPa', level=None, srcCode='10MKF40CF101').__dict__,
             ]
 
         hydrogenMonitor = Monitor(mainState=hydrogenMainstate).__dict__

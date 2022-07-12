@@ -66,13 +66,14 @@ class ModelResult(object):
         self.resultState = resultState
         
 class MainState(object):
-    def __init__(self, name=None, value=None, unit=None, level=None, information=None):
+    def __init__(self, name=None, value=None, unit=None, level=None, information=None, srcCode=None):
         super().__init__()
         self.name = name
         self.value = value
         self.unit = unit
         self.level = level
         self.information = information
+        self.srcCode = srcCode
 
 class Monitor(object):
     def __init__(self, mainState=None, graphicDisplay=None, moduleKeyInformation=None):
