@@ -18,12 +18,21 @@ def around(data):
     res = np.around(np.float64(data), Constant.DECIMAL_OUTPUT_DATA).squeeze().tolist()
     return [res] if data.shape[0] == 1 else res
 
+def inputDataPoints(inputData, diagResult=[], key='', value='', level=Constant.LEVEL_MESSURE_POINTS_LOST, alarm=False):
+    try:
+        return trunc(inputData['rawDataPackage'][key]['srcValue'])
+    except:
+        if alarm:
+            diagResult.append(DiagResult(content=f'{value}数据丢失', level=level, part='测点', substdCode=key).__dict__)
+        return None
+
 def HOW_pred():
-    
+    diagResult = []
+
     try:
         inputData = request.get_data(as_text=True)
         inputData = json.loads(inputData)
-        dataNum, collectionTime = js2rd(inputData)
+        dataNum, collectionTime = js2rd(inputData, diagResult=diagResult)
         # print(dataNum)
     except:
         pass
@@ -48,24 +57,23 @@ def HOW_pred():
         WaterPH_PH = np.array([df[i][14] for i in range(df_length)])
         WaterFlow_flow = np.array([df[i][15] for i in range(df_length)])
 
-        if swt is not None:
-            H2Pur_swt = swt[0:2]
-            OilIn_swt = swt[2:6]
-            oil_tank_low = swt[6]
-            oil_tank_high = swt[7]
-            WaterFlow_swt = swt[8:11]
-            WaterCond_swt = swt[11:13]
-            water_tank_low = swt[13]
-            water_tank_high = swt[14]
-            hyd_prs_low = swt[15]
-            OilFB_fb = swt[16:18]
-            outcond_high = int(swt[18] > Alarm.Water_conductivity)
-            outtemp_high = int(swt[19] > Alarm.Water_outTemp)
-            intemp_high = int(swt[20] > Alarm.Water_inTemp)
+        H2Pur_swt = swt[0:2]
+        OilIn_swt = swt[2:6]
+        oil_tank_low = swt[6]
+        oil_tank_high = swt[7]
+        WaterFlow_swt = swt[8:11]
+        WaterCond_swt = swt[11:13]
+        water_tank_low = swt[13]
+        water_tank_high = swt[14]
+        hyd_prs_low = swt[15]
+        OilFB_fb = swt[16:18]
+        outcond_high = int(swt[18] > Alarm.Ion_exchanger_outlet_conductivity)
+        outtemp_high = int(swt[19] > Alarm.Water_outTemp)
+        intemp_high = int(swt[20] > Alarm.Water_inTemp)
 
         flag = df_length == Constant.MIN_PREDICTABLE_DATE_LENGTH
 
-        speed = inputData['rawDataPackage']['DEHSPEED']['srcValue']
+        speed = inputDataPoints(inputData=inputData, diagResult=diagResult, key='DEHSPEED', value='DEH转速', alarm=True)
 
         bGenStop, genStatus = Generator.status(speed) 
 
@@ -184,8 +192,6 @@ def HOW_pred():
             WaterConductivity=WaterConductivity, WaterPH=WaterPH, WaterHealth=WaterHealth,
             H2LeakageVol_History=H2LeakageVol_History).__dict__,
 
-        diagResult = []
-        
         for i in range(len(H2Lkg_advice)):
             if H2Lkg_advice[i]['adv'][0]:
                 diagResult.append(
@@ -302,9 +308,10 @@ def HOW_pred():
             MainState(name='过滤器堵塞', value=filterBlock[0], level=filterBlock[1]).__dict__,
             ]
 
-        hydrogenPressure = trunc(inputData['rawDataPackage']['10MKG71CP101']['srcValue'])
-        hydrogenPurity = trunc(inputData['rawDataPackage']['10MKG60CQ101']['srcValue'])
-        hydrogenHumidity = trunc(inputData['rawDataPackage']['10MKG61CM102']['srcValue'])
+        hydrogenPressure = inputDataPoints(inputData=inputData, key='10MKG71CP101')
+        hydrogenPurity = inputDataPoints(inputData=inputData, key='10MKG60CQ101')
+        hydrogenHumidity = inputDataPoints(inputData=inputData, key='10MKG61CM102')
+
         hydrogenMainstate = [
             MainState(name='漏氢速率', value=hydrogenLeakageVol, unit='m3/d', level=None, srcCode='10MKG90CF101').__dict__,
             MainState(name='压力', value=hydrogenPressure, unit='MPa', level=None, srcCode='10MKG71CP101').__dict__,
@@ -312,10 +319,12 @@ def HOW_pred():
             MainState(name='露点温度', value=hydrogenHumidity, unit='℃', level=None, srcCode='10MKG61CM102').__dict__,
             ]
 
-        oilH2PresDiff = trunc(inputData['rawDataPackage']['10MKW10CP006']['srcValue'])
-        vacuumTankLev = trunc(inputData['rawDataPackage']['10MKW10CL101']['srcValue'])
-        floaterTankLev = trunc(inputData['rawDataPackage']['10MKW10CL102']['srcValue'])
-        expansionSlotLev = '正常' if inputData['rawDataPackage']['10MKW32CL001']['srcValue'] == 0 else '高'
+        oilH2PresDiff = inputDataPoints(inputData=inputData, key='10MKW10CP006')
+        vacuumTankLev = inputDataPoints(inputData=inputData, diagResult=diagResult, key='10MKW10CL101', value='发电机密封油真空油箱液位', alarm=True)
+        floaterTankLev = inputDataPoints(inputData=inputData, key='10MKW10CL102')
+        expansionSlotLev = inputDataPoints(inputData=inputData, key='10MKW32CL001')
+        expansionSlotLev = '正常' if expansionSlotLev is None or expansionSlotLev== 0 else '高'
+
         oilMainstate = [
             MainState(name='油氢压差', value=oilH2PresDiff, unit='KPa', level=None, srcCode='10MKW10CP006').__dict__,
             MainState(name='真空油箱液位', value=vacuumTankLev, unit='mm', level=None, srcCode='10MKW10CL101').__dict__,
@@ -323,10 +332,11 @@ def HOW_pred():
             MainState(name='扩大槽液位', value=expansionSlotLev, unit=None, level=None, srcCode='10MKW32CL001').__dict__,
             ]
 
-        genInWaterTemp = trunc(inputData['rawDataPackage']['10MKF16CT301']['srcValue'])
-        statorWatInPressure = trunc(inputData['rawDataPackage']['10MKF40CP100']['srcValue'])
-        statorWatTankLev = trunc(inputData['rawDataPackage']['10MKF16CL101']['srcValue'])
-        statorWatFlow = trunc(inputData['rawDataPackage']['10MKF40CF101']['srcValue'])
+        genInWaterTemp = inputDataPoints(inputData=inputData, key='10MKF16CT301')
+        statorWatInPressure = inputDataPoints(inputData=inputData, key='10MKF40CP100')
+        statorWatTankLev = inputDataPoints(inputData=inputData, diagResult=diagResult, key='10MKF16CL101', value='定子冷却水水箱液位', alarm=True)
+        statorWatFlow = inputDataPoints(inputData=inputData, key='10MKF40CF101')
+
         waterMainstate = [
             MainState(name='出水温度', value=genInWaterTemp, unit='℃', level=None, srcCode='10MKF16CT301').__dict__,
             MainState(name='进水压力', value=statorWatInPressure, unit='KPa', level=None, srcCode='10MKF40CP100').__dict__,

@@ -301,21 +301,21 @@ class Water(object):
         else:
             advice.append({'adv': Constant.NULL_ADVICE, 'des': Constant.NULL_DESCRIPTION})
             
-        if outtemp_high > Alarm.Water_outTemp:
+        if outtemp_high:
             p['发电机出水温度高'] = 1
             level[2] = Constant.LEVEL_GENERATOR_OUTPUT_WATER_TEMPERATURE_HIGH
             advice.append(Water_dict.outtemp_high)
         else:
             advice.append({'adv': Constant.NULL_ADVICE, 'des': Constant.NULL_DESCRIPTION})
 
-        if outcond_high > Alarm.Ion_exchanger_outlet_conductivity:
+        if outcond_high:
             p['离子交换器出口电导率高'] = 1
             level[3] = Constant.LEVEL_ION_EXCHANGER_OUTLET_CONDUCTIVITY_HIGH
             advice.append(Water_dict.outcond_high)
         else:
             advice.append({'adv': Constant.NULL_ADVICE, 'des': Constant.NULL_DESCRIPTION})
 
-        if intemp_high > Alarm.Water_inTemp:
+        if intemp_high:
             p['发电机进水温度高'] = 1
             level[4] = Constant.LEVEL_GENERATOR_INPUT_WATER_TEMPERATURE_HIGH
             advice.append(Water_dict.intemp_high)

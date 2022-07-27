@@ -218,6 +218,10 @@ def rf_handle(path, windows, tar_fe, switch_alarm, train_fe, test, df_rd2pd):
     except:
         swt = [0] * len(switch_alarm)
     
+    for i in range(len(swt)):
+        if swt[i] is None:
+            swt[i] = 0
+    
     flow = df[tar_fe][-history_length:].values
     if df_length >= Constant.MIN_PREDICTABLE_DATE_LENGTH:
         df = (

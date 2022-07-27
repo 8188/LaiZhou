@@ -6,6 +6,7 @@ import datetime
 import redis
 from config import Config
 from app.data.parameters import Constant
+from app.data.data_format import DiagResult
 
 rdb = redis.Redis(host=Config.REDIS_HOST, port=Config.REDIS_PORT, password=Config.REDIS_PASSWORD, 
     decode_responses=True, db=Config.REDIS_DATABASE)
@@ -26,7 +27,7 @@ def redisHSet(rdb, maxCapacity, tableName, key, dataNow, columnNames, collection
         rdb.hset(tableName, key, str(dataHGet + [res]))
     rdb.expire(tableName, expireTime)
 
-def js2rd(js):
+def js2rd(js, diagResult):
     rawDataPackage = js['rawDataPackage']
     substdCode = []
     srcValue = []
@@ -39,6 +40,7 @@ def js2rd(js):
         else:
             substdCode.append(c)
             srcValue.append(None)
+            diagResult.append(DiagResult(content=f'{dic[c]}数据丢失', level=Constant.LEVEL_MESSURE_POINTS_LOST, part='测点', substdCode=c).__dict__)
 
     timeStamps = js['collectionTime']
     collectionTime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(timeStamps)) # +3600*8
