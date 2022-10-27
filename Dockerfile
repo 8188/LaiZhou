@@ -1,4 +1,4 @@
-FROM python:3
+FROM python:3.6
 MAINTAINER Li
 #add project files to the usr/src/app folder
 ADD . /usr/src/app
