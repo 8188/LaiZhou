@@ -1,6 +1,7 @@
 from flask import Flask
 from config import Config
 from flask_apscheduler import APScheduler
+from flask_cors import CORS
 import logging
 from logging.handlers import RotatingFileHandler
 import os
@@ -8,10 +9,14 @@ import warnings
 warnings.filterwarnings("ignore")
 
 scheduler = APScheduler()
+cors = CORS()
+
 
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+
+    cors.init_app(app, supports_credentials=True)
 
     scheduler.init_app(app)
     scheduler.start()
