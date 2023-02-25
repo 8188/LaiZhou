@@ -1,6 +1,5 @@
-from ast import Or
 import numpy as np
-from app.data.parameters import Constant, Alarm
+from app.data.parameters import Constant
 from app.warning.advice_dict import H2_dict, Oil_dict, Water_dict
 
 

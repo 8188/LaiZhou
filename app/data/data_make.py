@@ -6,8 +6,8 @@ from app.data.data_format import OutputData, DiagResult, CalcResult, ModelResult
 from app.data.data_pipe import health_handle, rf_handle, mscred_H2, mscred_Oil, mscred_Water
 from app.data.parameters import Alarm, H2_leakage, H2_health, Oil_health, Water_health, RF_All, Constant
 from app.warning.logic import Hydrogen, Oil, Water, DisplayLogic, Generator
-from flask import request
-import simplejson as json
+import orjson as json
+from app import logger
 
 
 def trunc(value):
@@ -26,16 +26,15 @@ def inputDataPoints(inputData, diagResult=[], key='', value='', level=Constant.L
             diagResult.append(DiagResult(content=f'{value}数据丢失', level=level, part='测点', substdCode=key).__dict__)
         return None
 
-def HOW_pred():
+def HOW_pred(req):
     diagResult = []
 
     try:
-        inputData = request.get_data(as_text=True)
-        inputData = json.loads(inputData)
-        dataNum, collectionTime = js2rd(inputData, diagResult=diagResult)
-        # print(dataNum)
+        inputData = json.loads(req)
     except:
-        pass
+        logger.error("Fail to Catch Data")
+    dataNum, collectionTime = js2rd(inputData, diagResult=diagResult)
+    # print(dataNum)
 
     df_rd2pd = rd2pd()
 
@@ -371,8 +370,7 @@ def HOW_pred():
 
 
 def redisTest():
-    inputData = request.get_data(as_text=True)
-    inputData = json.loads(inputData)
-    dataNum = js2rd(inputData)
+    # inputData = request.get_data(as_text=True)
+    # inputData = json.loads(inputData)
+    # dataNum = js2rd(inputData)
     return
-

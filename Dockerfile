@@ -1,7 +1,8 @@
 FROM python:3.6
 LABEL maintainer="jsy"
-WORKDIR /usr/src/app
+WORKDIR /app/LaiZhou
 COPY requirements.txt ./
 RUN pip install -i http://pypi.douban.com/simple --trusted-host pypi.douban.com -r requirements.txt
-COPY . /usr/src/app 
-CMD python smart_plant.py
+ENV RELOAD False
+COPY . . 
+CMD uvicorn smart_plant:app --host 0.0.0.0 --port 8990

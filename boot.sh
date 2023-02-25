@@ -1,2 +1,2 @@
 #!/bin/sh
-exec gunicorn -b :5000 --access-logfile - --error-logfile - smart_plant:app
+uvicorn smart_plant:app --host 0.0.0.0 --port 8990

@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  fastapi:
+    build: .
+    container_name: laizhounew
+    ports:
+      - "8990:8990"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - REDIS_HOST=redis
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    depends_on:
+      - redis
+    restart: on-failure
+  redis:
+    image: redis
+    expose:
+      - 6379 
+  mongo:
+    image: mongo:5
+    expose:
+      - 27017

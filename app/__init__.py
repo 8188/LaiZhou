@@ -1,41 +1,43 @@
-from flask import Flask
-from config import Config
-from flask_apscheduler import APScheduler
-from flask_cors import CORS
-import logging
-from logging.handlers import RotatingFileHandler
-import os
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from loguru import logger
+from app.core.config import get_app_settings
 import warnings
 warnings.filterwarnings("ignore")
 
-scheduler = APScheduler()
-cors = CORS()
 
+settings = get_app_settings()
 
-def create_app():
-    app = Flask(__name__)
-    app.config.from_object(Config)
+def create_app() -> FastAPI:
+    settings.configure_logging()
+    app = FastAPI(**settings.fastapi_kwargs)
 
-    cors.init_app(app, supports_credentials=True)
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.allowed_hosts,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
-    scheduler.init_app(app)
-    scheduler.start()
+    # app.add_event_handler(
+    #     "startup",
+    #     create_start_app_handler(app, settings),
+    # )
+    # app.add_event_handler(
+    #     "shutdown",
+    #     create_stop_app_handler(app),
+    # )
 
-    from app.main import bp as main_bp
-    app.register_blueprint(main_bp)
+    # app.add_exception_handler(HTTPException, http_error_handler)
+    # app.add_exception_handler(RequestValidationError, http422_error_handler)
+    
+    from app.myScheduler import scheduler
+    if scheduler.state != 1: # 是否已运行
+        scheduler.start()
+        logger.info("Scheduler Start")
 
-    if not app.debug and not app.testing:
-        if not os.path.exists('logs'):
-            os.mkdir('logs')
-        file_handler = RotatingFileHandler('logs/LaiZhou.log', maxBytes=10240,
-            backupCount=10)
-        file_handler.setFormatter(logging.Formatter(
-            '%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
-        ))
-        file_handler.setLevel(logging.INFO)
-        app.logger.addHandler(file_handler)
-
-        app.logger.setLevel(logging.INFO)
-        app.logger.info('LaiZhou startup')   
+    from app.main import router as main_router
+    app.include_router(main_router)
 
     return app

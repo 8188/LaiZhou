@@ -1,11 +1,8 @@
-from app import create_app
-from gevent import pywsgi, monkey
-from config import Config
+from app import settings, create_app
+import uvicorn
+from pathlib import Path
 
 app = create_app()
- 
-if __name__ == '__main__':
-    #app.run(host='0.0.0.0')
-    monkey.patch_all()
-    http_server = pywsgi.WSGIServer((Config.WSGI_HOST, Config.WSGI_PORT), app)
-    http_server.serve_forever()
+
+if __name__ == "__main__":
+    uvicorn.run(f"{Path(__file__).stem}:app", host=settings.WSGI_HOST, port=settings.WSGI_PORT, reload=settings.RELOAD)

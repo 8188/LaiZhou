@@ -1,15 +1,14 @@
-from os import times
-import simplejson as json
+import json
 import pandas as pd
 import time
 import datetime
 import redis
-from config import Config
+from app import settings
 from app.data.parameters import Constant
 from app.data.data_format import DiagResult
 
-rdb = redis.Redis(host=Config.REDIS_HOST, port=Config.REDIS_PORT, password=Config.REDIS_PASSWORD, 
-    decode_responses=True, db=Config.REDIS_DATABASE)
+rdb = redis.Redis(host=settings.REDIS_HOST, port=settings.REDIS_PORT, password=settings.REDIS_PASSWORD, 
+    decode_responses=True, db=settings.REDIS_DATABASE)
 
 def load_dic():
     with open('app/static/codemap.json', 'r', encoding='utf-8') as js:
@@ -25,7 +24,8 @@ def redisHSet(rdb, maxCapacity, tableName, key, dataNow, columnNames, collection
         rdb.hset(tableName, key, str(dataHGet[1:] + [res]))
     else:
         rdb.hset(tableName, key, str(dataHGet + [res]))
-    rdb.expire(tableName, expireTime)
+    if expireTime: # else forever
+        rdb.expire(tableName, expireTime)
 
 def js2rd(js, diagResult):
     rawDataPackage = js['rawDataPackage']
@@ -56,27 +56,27 @@ def js2rd(js, diagResult):
             data_H2LeakgeVol.append(rawDataPackage[c]['srcValue'])
     
     if len(data_H2LeakgeVol)==len(H2LeakageDataCodes):
-        H2LeakageData = rdb.hget(Config.TABLE_H2_LEAKAGE_DATA, Config.KEY_H2_LEAKAGE_DATA)
+        H2LeakageData = rdb.hget(settings.TABLE_H2_LEAKAGE_DATA, settings.KEY_H2_LEAKAGE_DATA)
         H2LeakageData = list(eval(H2LeakageData)) if H2LeakageData else []
         
         if data_H2LeakgeVol[-1] > Constant.H2_FILL_JUDGE_UPPER_BOUND: # '10MKG80CF101'
-            rdb.hdel(Config.TABLE_H2_LEAKAGE_DATA, Config.KEY_H2_LEAKAGE_DATA)
-            rdb.hdel(Config.TABLE_H2_LEAKAGE_DATA_BEGIN, Config.KEY_H2_LEAKAGE_DATA_BEGIN) # delete fill H2 as well
+            rdb.hdel(settings.TABLE_H2_LEAKAGE_DATA, settings.KEY_H2_LEAKAGE_DATA)
+            rdb.hdel(settings.TABLE_H2_LEAKAGE_DATA_BEGIN, settings.KEY_H2_LEAKAGE_DATA_BEGIN) # delete fill H2 as well
         elif data_H2LeakgeVol[-1] < Constant.H2_FILL_JUDGE_LOWER_BOUND:
             redisHSet(
-                rdb=rdb, maxCapacity=Constant.MAX_CAPACITY_TABLE_H2_LEAKAGE_DATA, tableName=Config.TABLE_H2_LEAKAGE_DATA,
-                key=Config.KEY_H2_LEAKAGE_DATA, dataNow=data_H2LeakgeVol, columnNames=H2LeakageColumnNames,
+                rdb=rdb, maxCapacity=Constant.MAX_CAPACITY_TABLE_H2_LEAKAGE_DATA, tableName=settings.TABLE_H2_LEAKAGE_DATA,
+                key=settings.KEY_H2_LEAKAGE_DATA, dataNow=data_H2LeakgeVol, columnNames=H2LeakageColumnNames,
                 collectionTime=timeStamps, dataHGet=H2LeakageData, expireTime=Constant.TABLE_H2_LEAKAGE_DATA_EXPIRE_TIME)
 
-    H2LeakageDataBegin = rdb.hget(Config.TABLE_H2_LEAKAGE_DATA_BEGIN, Config.KEY_H2_LEAKAGE_DATA_BEGIN)
+    H2LeakageDataBegin = rdb.hget(settings.TABLE_H2_LEAKAGE_DATA_BEGIN, settings.KEY_H2_LEAKAGE_DATA_BEGIN)
     H2LeakageDataBegin = list(eval(H2LeakageDataBegin)) if H2LeakageDataBegin else []
     if len(H2LeakageDataBegin) < Constant.MAX_CAPACITY_TABLE_H2_LEAKAGE_DATA_BEGIN:
         data_H2LeakgeVolBegin = data_H2LeakgeVol[:len(H2LeakageDataCodesBegin)] 
         
         if len(data_H2LeakgeVolBegin)==len(H2LeakageDataCodesBegin):
             redisHSet(
-                rdb=rdb, maxCapacity=Constant.MAX_CAPACITY_TABLE_H2_LEAKAGE_DATA_BEGIN, tableName=Config.TABLE_H2_LEAKAGE_DATA_BEGIN,
-                key=Config.KEY_H2_LEAKAGE_DATA_BEGIN, dataNow=data_H2LeakgeVolBegin, columnNames=H2LeakageColumnNamesBegin,
+                rdb=rdb, maxCapacity=Constant.MAX_CAPACITY_TABLE_H2_LEAKAGE_DATA_BEGIN, tableName=settings.TABLE_H2_LEAKAGE_DATA_BEGIN,
+                key=settings.KEY_H2_LEAKAGE_DATA_BEGIN, dataNow=data_H2LeakgeVolBegin, columnNames=H2LeakageColumnNamesBegin,
                 collectionTime=timeStamps, dataHGet=H2LeakageDataBegin, expireTime=Constant.TABLE_H2_LEAKAGE_DATA_BEGIN_EXPIRE_TIME)
     elif len(H2LeakageDataBegin) == Constant.MAX_CAPACITY_TABLE_H2_LEAKAGE_DATA_BEGIN:
         tempB, tempP, tempT_steam, tempT_excitation = [0] * 4
@@ -92,27 +92,27 @@ def js2rd(js, diagResult):
         dataMean = [tempB, tempP, tempT_steam, tempT_excitation]
         res = dict(zip(['time'] + H2LeakageColumnNamesBegin, [timeStamps] + dataMean))
 
-        rdb.hset(Config.TABLE_H2_LEAKAGE_DATA_BEGIN, Config.KEY_H2_LEAKAGE_DATA_BEGIN, str(H2LeakageDataBegin + [res]))
+        rdb.hset(settings.TABLE_H2_LEAKAGE_DATA_BEGIN, settings.KEY_H2_LEAKAGE_DATA_BEGIN, str(H2LeakageDataBegin + [res]))
 
-    dataTemp = rdb.hget(Config.TABLE_MAIN, Config.KEY_MAIN)
+    dataTemp = rdb.hget(settings.TABLE_MAIN, settings.KEY_MAIN)
     if not dataTemp:
         dataTemp = []
     else:
         dataTemp = list(eval(dataTemp))
         if str(datetime.datetime.strptime(dataTemp[-1]['time'], "%Y-%m-%d %H:%M:%S") + datetime.timedelta(minutes=5)) \
             < collectionTime:
-            rdb.delete(Config.TABLE_MAIN)
+            rdb.delete(settings.TABLE_MAIN)
             dataTemp = []
     
     redisHSet(
-        rdb=rdb, maxCapacity=Constant.MAX_CAPACITY_TABLE_MAIN, tableName=Config.TABLE_MAIN, key=Config.KEY_MAIN,
+        rdb=rdb, maxCapacity=Constant.MAX_CAPACITY_TABLE_MAIN, tableName=settings.TABLE_MAIN, key=settings.KEY_MAIN,
         dataNow=srcValue, columnNames=substdCode, collectionTime=collectionTime, dataHGet=dataTemp, 
         expireTime=Constant.TABLE_MAIN_EXPIRE_TIME)
 
     return len(dataTemp), collectionTime
 
 def rd2pd():
-    dataTemp = rdb.hget(Config.TABLE_MAIN, Config.KEY_MAIN)
+    dataTemp = rdb.hget(settings.TABLE_MAIN, settings.KEY_MAIN)
     if dataTemp:
         dataTemp = eval(dataTemp)[-Constant.MAX_CAPACITY_TABLE_MAIN:]
     else:
@@ -130,8 +130,8 @@ def rd2pd():
     return df, genRunning
 
 def H2LeakageVol(genVol):
-    H2LeakageData = rdb.hget(Config.TABLE_H2_LEAKAGE_DATA, Config.KEY_H2_LEAKAGE_DATA)
-    H2LeakageDataBegin = rdb.hget(Config.TABLE_H2_LEAKAGE_DATA_BEGIN, Config.KEY_H2_LEAKAGE_DATA_BEGIN)
+    H2LeakageData = rdb.hget(settings.TABLE_H2_LEAKAGE_DATA, settings.KEY_H2_LEAKAGE_DATA)
+    H2LeakageDataBegin = rdb.hget(settings.TABLE_H2_LEAKAGE_DATA_BEGIN, settings.KEY_H2_LEAKAGE_DATA_BEGIN)
 
     if H2LeakageData:
         H2LeakageData = eval(H2LeakageData)
